@@ -58,7 +58,8 @@ class NEOs():
             self.data_l.append(dict_data)
 
         self.df = pd.DataFrame(self.data_l)
-        self.df[self.df.columns[-4:]] = self.df[self.df.columns[-4:]].astype(float)
-        self.df[self.df.columns[[0,5]]] = self.df[self.df.columns[[0,5]]].apply(pd.to_datetime)
-        
+        self.df[self.df.columns[-4:]] = self.df[self.df.columns[-4:]].astype(str)
+        self.df['is_potentially_hazardous_asteroid'] = self.df['is_potentially_hazardous_asteroid'].astype(str)
+        self.df.rename(columns={'id':'neo_id'},inplace=True)
+                
         return self.df

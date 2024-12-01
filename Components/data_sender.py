@@ -12,7 +12,7 @@ class Data_sender():
         self.dataframe = dataframe
         self.table_name = table_name
     
-    def _connection(self):
+    def connection(self):
         
         load_dotenv()
 
@@ -35,7 +35,7 @@ class Data_sender():
     def sender(self):
 
         self.records = self.dataframe
-        self.conn = self._connection()
+        self.conn = self.connection()
 
         if self.records.empty == False:
 

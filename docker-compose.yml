@@ -1,7 +1,7 @@
 version: '3'
 x-airflow-common:
   &airflow-common
-  image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.0.2}
+  build: . 
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
@@ -20,6 +20,7 @@ x-airflow-common:
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
     - ./plugins:/opt/airflow/plugins
+    - ./Components:/opt/airflow/Components
   user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
   depends_on:
     redis:
@@ -28,7 +29,6 @@ x-airflow-common:
       condition: service_healthy
 
 services:
-  # Banco de dados do Airflow
   postgres:
     image: postgres:13
     environment:
@@ -43,7 +43,6 @@ services:
       retries: 5
     restart: always
 
-  # Banco de dados para o projeto (dados coletados pelas classes Python)
   postgres_project:
     image: postgres:13
     environment:
@@ -51,7 +50,7 @@ services:
       POSTGRES_PASSWORD: project_password
       POSTGRES_DB: project_db
     ports:
-      - "5433:5432"  # A porta externa é 5433 para evitar conflito com o postgres do Airflow
+      - "5433:5432" 
     volumes:
       - postgres-project-db-volume:/var/lib/postgresql/data
     healthcheck:
