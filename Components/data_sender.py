@@ -7,10 +7,12 @@ from dotenv import load_dotenv
 
 class Data_sender():
 
-    def __init__(self,dataframe,table_name):
+    def __init__(self,dataframe,table_name, conn=None):
 
         self.dataframe = dataframe
         self.table_name = table_name
+        self.conn = conn
+        self.cursor = None
     
     def connection(self):
         
@@ -35,7 +37,9 @@ class Data_sender():
     def sender(self):
 
         self.records = self.dataframe
-        self.conn = self.connection()
+
+        if not self.conn:
+            self.conn = self.connection()
 
         if self.records.empty == False:
 
@@ -45,14 +49,10 @@ class Data_sender():
             self.sql_insert = f"INSERT INTO {self.table_name} ({self.columns}) VALUES %s"
 
             try:
-
-                with self.conn.cursor() as cur:
-                    
-                    psycopg2.extras.execute_values(cur, self.sql_insert, self.values)
-                    
+                if not self.cursor:
+                    self.cursor = self.conn.cursor()
+                    psycopg2.extras.execute_values(self.cursor, self.sql_insert, self.values)
                     self.conn.commit()
-                    cur.close()
-                    self.conn.close()
 
             except Exception as e:
                     self.conn.rollback()
@@ -61,3 +61,11 @@ class Data_sender():
 
         else: 
             pass
+
+    def close(self):
+        
+        if self.cursor:
+            self.cursor.close()
+
+        if self.conn:
+            self.conn.close()
