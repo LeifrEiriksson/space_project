@@ -6,10 +6,11 @@ from time import sleep
 import pandas as pd
 from tenacity import retry, stop_after_attempt, wait_exponential
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'Components'))
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, BASE_DIR)
 
-from data_sender import connection_db
-from iss import Iss
+from Components.data_sender import connection_db
+from Components.iss import Iss
 
 
 @retry(

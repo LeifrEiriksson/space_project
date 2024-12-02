@@ -31,7 +31,7 @@ class Iss():
 
             self.crew = [names['name'] for names in self.response_crew['people'] if names['craft'] == 'ISS']
             self.df = pd.DataFrame({"name":self.crew})
-            self.df["date_ref"] = datetime.today().strftime("%Y-%m-%d")
+            self.df["date_ref"] = datetime.datetime.today().strftime("%Y-%m-%d")
 
             return self.df
         

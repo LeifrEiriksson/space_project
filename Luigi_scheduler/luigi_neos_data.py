@@ -25,21 +25,21 @@ class ConnectionTestTask(luigi.Task):
             with self.output().open('w') as f:
                 f.write(f"Connection is OK at {datetime.now().strftime('%Y-%m-%d-%H:%M:%S')}\n")
 
-class ISSPositionTask(luigi.Task):
+class NeosDataTask(luigi.Task):
 
     def requires(self):
         return ConnectionTestTask()
 
     def output(self):
-        return luigi.LocalTarget('iss_position_output.txt')
+        return luigi.LocalTarget('neos_output.txt')
     
     def run(self):
-        script_path = os.path.join('..', 'Run', 'iss_position.py')
+        script_path = os.path.join('..', 'Run', 'neos_data.py')
         subprocess.run(['python', script_path], check=True)
 
         with self.output().open('w') as f:
-                f.write(f"Data sending okay - ISS Positions - at {datetime.now().strftime('%Y-%m-%d-%H:%M:%S')}\n")
+                f.write(f"NEOS data is updated - at {datetime.now().strftime('%Y-%m-%d-%H:%M:%S')}\n")
 
 
 if __name__ == '__main__':
-    luigi.build([ISSPositionTask()])
+    luigi.build([NeosDataTask()])
