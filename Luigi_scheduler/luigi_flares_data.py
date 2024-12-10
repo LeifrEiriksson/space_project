@@ -13,7 +13,7 @@ from Components.data_sender import connection_test
 
 class ConnectionTestTask(luigi.Task):
     def output(self):
-        return luigi.LocalTarget('neos_conn_test_output.txt') 
+        return luigi.LocalTarget('flares_conn_test_output.txt') 
 
     def run(self):
         result = connection_test()[1]
@@ -25,21 +25,21 @@ class ConnectionTestTask(luigi.Task):
             with self.output().open('w') as f:
                 f.write(f"Connection Success: {datetime.now().strftime('%Y-%m-%d-%H:%M:%S')}\n")
 
-class NeosDataTask(luigi.Task):
+class FlaresDataTask(luigi.Task):
 
     def requires(self):
         return ConnectionTestTask()
 
     def output(self):
-        return luigi.LocalTarget('neos_output.txt')
+        return luigi.LocalTarget('flares_output.txt')
     
     def run(self):
-        script_path = os.path.join('..', 'Run', 'neos_data.py')
+        script_path = os.path.join('..', 'Run', 'flares_data.py')
         subprocess.run(['python', script_path], check=True)
 
         with self.output().open('w') as f:
-                f.write(f"NEOS Data Updated: {datetime.now().strftime('%Y-%m-%d-%H:%M:%S')}\n")
+                f.write(f"Flares Data Updated: {datetime.now().strftime('%Y-%m-%d-%H:%M:%S')}\n")
 
 
 if __name__ == '__main__':
-    luigi.build([NeosDataTask()])
+    luigi.build([FlaresDataTask()])
