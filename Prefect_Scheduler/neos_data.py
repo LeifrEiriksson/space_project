@@ -1,9 +1,8 @@
 import os
 import sys
-from datetime import datetime, timedelta
-from time import sleep
 
 import pandas as pd
+from prefect import flow
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -27,7 +26,17 @@ def neos():
 
     return neos 
 
+@flow 
+def neos_sender():
 
-if __name__ == '__main__':
     neos_data = neos()
     connection_db(neos_data,"neos_daily")
+    print("Neos Data Updated!")
+
+
+
+if __name__ == '__main__':
+
+    neos_sender.serve(name='Neos_data', 
+                      tags = ['Neos Data'],
+                      cron = '20 6 * * *')

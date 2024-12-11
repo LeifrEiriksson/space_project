@@ -1,9 +1,8 @@
 import os
 import sys
-from datetime import datetime, timedelta
-from time import sleep
 
 import pandas as pd
+from prefect import flow
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -28,8 +27,18 @@ def crew():
     
     return crew
 
-
-if __name__ == '__main__':
+@flow
+def crew_sender():
 
     crew_data = crew()
     connection_db(crew_data,"crew_iss_daily")
+
+    print("Crew Data Updated!")
+
+
+
+if __name__ == '__main__':
+
+    crew_sender.serve(name='Crew_data', 
+                      tags = ['Crew Data', 'ISS Crew', 'Daily'],
+                      cron = '10 6 * * *')

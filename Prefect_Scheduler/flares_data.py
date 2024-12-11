@@ -1,14 +1,12 @@
 import os
 import sys
-from datetime import datetime, timedelta
-from time import sleep
 
 import pandas as pd
+from prefect import flow
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, BASE_DIR)
-
 from Components.data_sender import connection_db
 from Components.flares import Flares
 
@@ -28,14 +26,21 @@ def flares():
     
     return data_flares
 
-
-if __name__ == '__main__':
+@flow
+def flares_sender():
 
     flares_data = flares() 
 
     if flares_data.empty == True:
-        print("Empty Data - Flares.")
+        print("Empty Data - Theres no solar flares.")
 
     else:
         flares_data
-        connection_db(flares_data,"crew_iss_daily")
+        connection_db(flares_data,"flares_daily")
+        print("Flares Data Updated!")
+
+
+if __name__ == '__main__':
+
+    flares_sender.serve(name='Flares_data', cron = '0 6 * * *')
+

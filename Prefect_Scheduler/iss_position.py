@@ -1,9 +1,9 @@
 import os
 import sys
-from datetime import datetime, timedelta
 from time import sleep
 
 import pandas as pd
+from prefect import flow
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -52,8 +52,15 @@ def pos_sender():
     
     return iss_df
 
+@flow
+def iss_position_sender():
+    data_pos = pos_sender()
+    connection_db(data_pos,"iss_positions")
+
+
 
 if __name__ == '__main__':
 
-    data_pos = pos_sender()
-    connection_db(data_pos,"iss_positions")
+    iss_position_sender.serve(name='Iss_Position', 
+                      tags = ['Iss Position Data', 'Every 15 minutes'],
+                      cron = '*/15 * * * *')
