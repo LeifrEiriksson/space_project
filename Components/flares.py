@@ -56,7 +56,6 @@ class Flares():
 
             self.df[["versionId"]] = self.df[["versionId"]].astype(str)
             self.df[["activeRegionNum"]] =  self.df[["activeRegionNum"]].astype(str)
-            #self.df[["beginTime","peakTime","endTime","submissionTime"]] = self.df[["beginTime","peakTime","endTime","submissionTime"]].apply(pd.to_datetime)
             self.df['instruments'] = self.df['instruments'].apply(lambda x: json.dumps(x) if pd.notnull(x) else None)
             self.df['linkedEvents'] = self.df['linkedEvents'].apply(lambda x: json.dumps(x) if pd.notnull(x) else None)
 

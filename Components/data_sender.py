@@ -26,7 +26,6 @@ def connection_test():
     
         print(f"database connection error: \n-- {error}\nplease try again!") 
 
-
 def connection_db (dataframe,table_name):
 
     conn = connection_test()[0]
