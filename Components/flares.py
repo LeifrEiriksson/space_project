@@ -16,7 +16,7 @@ class Flares():
 
     def _initialize(self): 
 
-        self.__nasa_api_key = os.environ.get("NASA_API_KEY")
+        self.__nasa_api_key = os.environ.get("NASA_API_KEY") 
         self.__date_ref = (datetime.today()  - timedelta(days = 1)).strftime("%Y-%m-%d")
 
         try:

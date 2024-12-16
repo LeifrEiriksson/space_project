@@ -94,5 +94,3 @@ Periodically collect the location of the ISS, ensuring up-to-date latitude and l
 Manage the consumption of data on Near Earth Objects (NEOs) using the NEOWS API.
 
 
-
-
